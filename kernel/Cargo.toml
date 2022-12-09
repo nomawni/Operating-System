@@ -1,0 +1,9 @@
+[package]
+#todo change authors and name
+authors = ["Timo Renk <timo.renk@stud.uni-bamberg.de>"]
+edition = "2021"
+name = "riscv_rust_os"
+version = "0.1.0"
+
+[dependencies]
+riscv_utils = {path = "../riscv"}

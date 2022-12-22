@@ -9,14 +9,6 @@
 - Tobias Treuheit (tobias-niklas.treuheit@stud.uni-bamberg.de))
 - Max Meidinger (max_meidinger@stud.uni-bamberg.de)
 
-## TODO
-
-- [ ] Basic IPC
-- [ ] Virtual Memory
-- [ ] Scheduling
-- [ ] memory mapped UART I/O
-- [ ] a simple filesystem
-
 ## Description
 
 In this project, we attempt to build a mikrokernel in RUST on a RISCV processor. For this we use the code of Timo Renk as a basis.
@@ -27,21 +19,122 @@ To run the code, the following is needed:
 - rust with rustup and cargo
 - qemu for riscv
 
-### Important Git commands
+## Proposed Git Workflow for this project
+The following workflow might be a bit excessive for the scale of our project, but adhering to it will help to understand git better and to be more comfortable in its usage.
 
-- git clone ...
-- git branch -M main
-- git fetch
-- git add ...
-- git status
-- git commit –m „..."
-- git push
-- git pull
-- git merge
+For a more detailed explanation of mentioned commands address the short explanation of them down below.
+
+#
+
+### Implementing new feature
+You would typically start by creating a new feature branch from the current state of the master branch. 
+The next step would be to iteratively implement the feature. This might require more or less changes and should depending on the number of changes be split into multiple commits.
+For bigger features this might create a lot of smaller commits. 
+
+Each commit should, if possible represent some sort of logical unit, meaning that the changes should serve a common purpose as part of the implementation of the feature.
+
+After implementing the feature, all the changes need to be brought into the master branch.
+
+### Include changes into the master branch
+One way to do this might be to change to the master branch and merge the feature branch into the master branch.
+This will create a merge commit every time, polluting the history of the master branch with the superfluous merge commtis. 
+
+This might be avoided by rebasing. One would rebase his feature branch onto the current stage of the master branch, which simply reapplies the changes recorded in the commits on the newer state of the master branch. This might lead to conflicts as merging does, but those conflict will be resolved commit per commit and not with all changes of the feature branch.
+
+### Merge Request
+The final step is to create a merge request. This should only happen if the feature is well-tested, which in our case probably means testing the feature by hand.
+
+First, you need to push the branch to the remote repository. From there you can create a merge request into the master branch.
+
+Make sure to reference the resolved issue in the title of the Merge Request and assign collaborators on that issue as reviewers, so that they can take a finaly look at the proposed changes.
+
+The given merge options can in most cases stay ticked.
+
+Especially the squashing of the commits is quite useful:
+It squashes all commits of the feature branch together into one with the name of the merge request. This results in a quite nice commit history, consisting of one commit for each issue/feature.
+
+### Integration Branch?
+Previously the usage of a integration branch was used, but those are typically used to combine multiple featurebranches together to be then tested in combination and integrated as one into the master branch.
+That is not necessary for our project and really only makes sense for larger-scale projects
+#
+
+## Short overview of useful Git Commands
+Here is a list of useful git commands in the order in which they might be used in a typical workflow.
+
+### Cloning the repository
+`git clone <upstream-url>`
+### Creating a new branch
+`git checkout -b <branchname>`
+This will create a new local branch with the name `<branchname>`. This new branch will initially have the same state as the branch that it was created from. 
+### Checking files with changes
+`git status`
+This command will show a number of things:
+
+- Which branch you are currently on
+- whether and by how many commits the remote or the local branches are ahead of each other and whether they diverge
+- Which files are staged for commit (in green)
+- Which files are not staged for commit (in red)
+
+### Staging files for a commit
+`git add <filepath>`
+
+This command will stage all changed files that are included in the given path (recursively!) to be added to the next commit
+
+### Unstaging files
+`git reset -- <filepath>`
+
+This command will remove all files in the staging area included in the file path.
+
+### Creating a new commit with staged files
+`git commit -m <commitmessage>` 
+
+This will create a new commit containing all the previously staged changes.
+
+### Adding changes to a previous commit
+`git commit --amend -m <commitmsg>`
+
+This will add all currently staged changes to the previous commit. Without the `-m` flag followed by a commit message a editor will be opened, in which you can edit the previous commit message. 
+
+### Pushing changes to a remote repository
+`git push`
+
+This will push the locally committed changes to the remote branch. This might not work when there is no branch set up as a remote branch for the local branch, for example when the current working branch is created locally an there is no remote branch tracking the local branch yet.
+
+Using `git push -u <remote> <branchname>` will set the upstream branch that should correspond to the local branch. If that branch does not exist yet, it will be created.
+
+`<remote>` corresponds to the name of the upstream repository. In our case there will probably be only one defaulting to the name `origin`.
+
+`<branchname>` is the name of the remote branch that is supposed to be tracking the local branch. Most of the time it makes sense to give it the same name as the local branch.
+
+### Get changes from the remote repository
+`git fetch`
+
+This command fetches the current changes from the remote branch, but does not integrate them into the local state.
+
+### Merge remote changes and local changes
+`git merge`
+
+This will try to automatically combine all remote changes that have previously been fetched with the local commited changes. There might, however, be some conflicts when the same file has been edited in different commits. Those will need to be resolved and committed in order to finalize the merge.
+
+`git merge <branchname>`
+
+If you want to merge another local branch into the working branch you can use this command to merge be branch `<branchname>` into the current working branch.
+
+### Fetch + Merge
+`get pull`
+
+Combines `git fetch` and `git merge` into one.
+
+### Rebase
+`git rebase <branchname>`
+
+This will apply and recalculate all changes that have happend since the current working branch diverged from the path given by `<branchname>` on top of the current state of `<branchname>`.
+This might also create conflicts that will need to be resolved.
 
 ## License
 
 This is a University Project.
+
 # Risc-V Rust OS
 
 Os written in Rust

@@ -2,6 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
+            //This task starts the qemu emulator with the compiled rust_os binary
+            //TODO "Debug" is not a accurate description of what this task does
+            // Something like "Run os on qemu" is more accurate
             "label": "Debug riscv_rust_os",
             "type": "shell",
             "command": "qemu-system-riscv64",
@@ -9,19 +12,19 @@
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "-nographic",
-                "-machine",
-                "virt",
-                "-smp",
-                "1",
-                "-bios",
-                "none",
-                "-kernel",
-                "./target/riscv64gc-unknown-none-elf/debug/riscv_rust_os.bin",
-                "-s",
-                "-S"
+                "-nographic",   //disable graphical output and redirect serial I/Os to console
+                "-machine",     //select emulated machine
+                "virt",         //select the VirtIO Board as emulated machine
+                "-smp",         //set the number of initial cpus
+                "1",            //number of initial cpus will be 1
+                "-bios",        //set filename for the bios
+                "none",         //bios filename set to none
+                "-kernel",      //select kernel image to be loaded
+                "./target/riscv64gc-unknown-none-elf/debug/riscv_rust_os.bin", //select rust_os binary as kernel image
+                "-s",           //shorthand for -gdb tcp::1234  
+                "-S"            //freeze CPU at startup (use 'c' to start execution)
             ],
-            "dependsOn": [
+            "dependsOn": [      //List of Tasks this task depends on
                 "Build riscv_rust_os"
             ],
             "dependsOrder": "sequence",
@@ -44,35 +47,35 @@
             }
         },
         {
+            "label": "Build riscv_rust_os",
             "type": "shell",
             "command": "cargo",
             "problemMatcher": [],
-            "label": "Build riscv_rust_os",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "objcopy",
-                "--bin",
-                "riscv_rust_os",
-                "--",
-                "-O",
-                "binary",
-                "./target/riscv64gc-unknown-none-elf/debug/riscv_rust_os.bin"
+                "objcopy",          //Set Toolchain, in this case cargo will act as a proxy for the llvm-objcopy tool
+                "--bin",            //Specify binary to be build 
+                "riscv_rust_os",    //Only this binary will be build
+                "--",               //Following arguments are proxied to the objcopy tool
+                "-O",               //Set Output-Target
+                "binary",           //Output will be in binary format
+                "./target/riscv64gc-unknown-none-elf/debug/riscv_rust_os.bin" //Path of output file
             ]
         },
         {
+            "label": "Build user_1",
             "type": "shell",
             "command": "cargo",
             "problemMatcher": [],
-            "label": "Build user_1",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "args": [
                 "objcopy",
                 "--bin",
-                "user_1",
+                "user_1", 
                 "--",
                 "-O",
                 "binary",
@@ -80,10 +83,10 @@
             ]
         },
         {
+            "label": "Build user_2",
             "type": "shell",
             "command": "cargo",
             "problemMatcher": [],
-            "label": "Build user_2",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -108,13 +111,13 @@
             ]
         },
         {
+            "label": "Build",
             "type": "cargo",
             "command": "build",
             "problemMatcher": [
                 "$rustc"
             ],
             "group": "build",
-            "label": "Build",
             "presentation": {
                 "echo": true,
                 "reveal": "always",

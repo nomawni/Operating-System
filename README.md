@@ -19,6 +19,21 @@ To run the code, the following is needed:
 - rust with rustup and cargo
 - qemu for riscv
 
+## Running the project
+Once all the required tools are installed, the project can be compiled and run using the provided tasks (Shortcut `Strg+Alt+R`).
+
+- Use `Build riscv_rust_os` to build the binaries for the kernel.
+- Use `Build user binaries` to build the binaries for the user processes to be run
+- Finally, use `Debug riscv_rust_os` to fire up qemu with the compiled kernel
+
+Now qemu is running with the given binary! But in orderr to get anything from the emulator, the visual studio debugger needs to connect to the debug server.
+How to connect to the server is already set up in launch.json, so simply pressing `F5` should suffice to connect to the debug server.
+
+To see what instruction is executed at the moment, you can open the `Disassembly View` using the Command Palette (Keyboard Shortcut: `F1`). 
+
+#
+
+
 ## Proposed Git Workflow for this project
 The following workflow might be a bit excessive for the scale of our project, but adhering to it will help to understand git better and to be more comfortable in its usage.
 
@@ -37,7 +52,7 @@ After implementing the feature, all the changes need to be brought into the mast
 
 ### Include changes into the master branch
 One way to do this might be to change to the master branch and merge the feature branch into the master branch.
-This will create a merge commit every time, polluting the history of the master branch with the superfluous merge commtis. 
+This will create a merge commit every time, polluting the history of the master branch with the superfluous merge commits. 
 
 This might be avoided by rebasing. One would rebase his feature branch onto the current stage of the master branch, which simply reapplies the changes recorded in the commits on the newer state of the master branch. This might lead to conflicts as merging does, but those conflict will be resolved commit per commit and not with all changes of the feature branch.
 
@@ -46,7 +61,7 @@ The final step is to create a merge request. This should only happen if the feat
 
 First, you need to push the branch to the remote repository. From there you can create a merge request into the master branch.
 
-Make sure to reference the resolved issue in the title of the Merge Request and assign collaborators on that issue as reviewers, so that they can take a finaly look at the proposed changes.
+Make sure to reference the resolved issue in the title of the Merge Request and assign collaborators on that issue as reviewers, so that they can take a finally look at the proposed changes.
 
 The given merge options can in most cases stay ticked.
 
@@ -54,7 +69,7 @@ Especially the squashing of the commits is quite useful:
 It squashes all commits of the feature branch together into one with the name of the merge request. This results in a quite nice commit history, consisting of one commit for each issue/feature.
 
 ### Integration Branch?
-Previously the usage of a integration branch was used, but those are typically used to combine multiple featurebranches together to be then tested in combination and integrated as one into the master branch.
+Previously the usage of a integration branch was used, but those are typically used to combine multiple feature branches together to be then tested in combination and integrated as one into the master branch.
 That is not necessary for our project and really only makes sense for larger-scale projects
 #
 
@@ -114,7 +129,7 @@ This command fetches the current changes from the remote branch, but does not in
 ### Merge remote changes and local changes
 `git merge`
 
-This will try to automatically combine all remote changes that have previously been fetched with the local commited changes. There might, however, be some conflicts when the same file has been edited in different commits. Those will need to be resolved and committed in order to finalize the merge.
+This will try to automatically combine all remote changes that have previously been fetched with the local committed changes. There might, however, be some conflicts when the same file has been edited in different commits. Those will need to be resolved and committed in order to finalize the merge.
 
 `git merge <branchname>`
 
@@ -128,12 +143,19 @@ Combines `git fetch` and `git merge` into one.
 ### Rebase
 `git rebase <branchname>`
 
-This will apply and recalculate all changes that have happend since the current working branch diverged from the path given by `<branchname>` on top of the current state of `<branchname>`.
+This will apply and recalculate all changes that have happened since the current working branch diverged from the path given by `<branchname>` on top of the current state of `<branchname>`.
 This might also create conflicts that will need to be resolved.
+
 
 ## License
 
 This is a University Project.
+
+#
+
+#
+
+
 
 # Risc-V Rust OS
 

@@ -3,5 +3,11 @@
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "always",
     "lldb.dereferencePointers": true,
-    "lldb.consoleMode": "commands"
+    "lldb.consoleMode": "commands",
+    "spellright.language": [
+        "en"
+    ],
+    "spellright.documentTypes": [
+        "latex"
+    ]
 }

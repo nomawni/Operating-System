@@ -1,9 +1,5 @@
 use super::{binary_struct::BinaryStruct, memory_mapping::MemoryMapping};
-
-const PRIORITY_BASE_ADDR: usize = 0x0c00_0000;
-const ENABLE_ADDR: usize = 0x0c00_2000;
-const THRESHOLD_ADDR_C0: usize = 0x0c20_0000;
-const CLAIM_COMP_ADDR_C0: usize = 0x0c20_0004;
+use riscv_utils::*;
 
 /// Interrupt request.
 pub enum IRQ {

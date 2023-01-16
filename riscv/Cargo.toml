@@ -1,6 +1,6 @@
 [package]
-#todo change authors
+#TODO change authors
 authors = ["Timo Renk <timo.renk@stud.uni-bamberg.de>"]
 edition = "2021"
 name = "riscv_utils"
-version = "0.1.0"
+version = "0.0.1"

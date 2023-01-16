@@ -3,7 +3,7 @@ use riscv_utils::write_machine_reg;
 use super::binary_struct::Byte;
 
 pub unsafe fn init() {
-    let pmp_addr_0 = 0x80000000 >> 2; // devices
+    let pmp_addr_0 = 0x80000000 >> 2; // devices  0x0-0x80000000 >> 2
     let pmp_addr_1 = 0x80100000 >> 2; // kernel
     let pmp_addr_2 = 0x80200000 >> 2; // user1
     let pmp_addr_3 = 0x80300000 >> 2; // user2

@@ -1,8 +1,7 @@
 use super::memory_mapping::MemoryMapping;
+use riscv_utils::*;
 
-const TIMER_DURATION: u64 = 10000000; //10000000
-const MTIMECMP_ADDR: usize = 0x0200_4000;
-const MTIME_ADDR: usize = 0x0200_BFF8;
+const TIMER_DURATION: u64 = 10000000; //QEMU 10Mhz -> 1s
 
 pub unsafe fn set_time_cmp() {
     let mut mtimecmp = MemoryMapping::new(MTIMECMP_ADDR);

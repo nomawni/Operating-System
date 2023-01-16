@@ -13,7 +13,7 @@ mod user_prog;
 
 pub(crate) use macros::*;
 
-//todo implement shutdown
+//TODO implement shutdown
 fn _shutdown() {}
 
 #[no_mangle]

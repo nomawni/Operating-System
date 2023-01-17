@@ -3,65 +3,91 @@ use super::memory_mapping::MemoryMapping;
 
 const BASE_ADDR: usize = 0x1000_0000;
 
+const RECEIVE_BIT: usize = 0;
+const TRANSMIT_BIT: usize = 1;
+const RECEIVER_LINE_STATUS_BIT: usize = 2;
+const RECEIVER_TRANSMIT_STATUS_BIT: usize = 3;
+
+/// Reserving address space for uart at [Base_ADDR].
+/// This includes address space for the register:
+/// - rbr_thr_dll = Receive Buffer Register
+/// - ier_dlm = Interrupt Enable Register
+/// - isr_fcr = Interrupt Status Register
+/// - lcr = Line Control Register
+/// - mcr = Modem Control Register
+/// - lsr = Line Status Register
+/// - msr = Memory Status Register
+/// - scr = Scratched Register Read/Write
 static mut UART: UART = UART {
     reg: UartRegister::new(BASE_ADDR),
 };
 
+/// Initializes the interrupts for uart in the ier_dlm register.
 pub unsafe fn init() {
     let mem_ier = &mut UART.reg.ier_dlm;
     let mut ier = BinaryStruct::from(0);
-    ier.at(0, true); // receive interrupt
-    ier.at(1, false); // transmit interrupt
-    ier.at(2, false); // receiver line status interrupt
-    ier.at(3, false); // receiver transmit status interrupt
+    ier.at(RECEIVE_BIT, true); // receive interrupt
+    ier.at(TRANSMIT_BIT, false); // transmit interrupt
+    ier.at(RECEIVER_LINE_STATUS_BIT, false); // receiver line status interrupt
+    ier.at(RECEIVER_TRANSMIT_STATUS_BIT, false); // receiver transmit status interrupt
     mem_ier.write(ier);
 }
 
 /// Only call if an interrupt happened. Returns the char.
 pub unsafe fn read_char() -> char {
-    let char = UART.read_char();
-    return char;
+    return UART.get_char();
 }
 
+/// print a str over uart on the terminal
 pub unsafe fn print_str(str: &str) {
-    str.chars().for_each(|c| print_char(c));
+    for c in str.chars() {
+        UART.print_char(c);
+    }
 }
+/// print a char over uart on the terminal
 pub unsafe fn print_char(char: char) {
-    UART.print_char(char as u8);
+    UART.print_char(char);
 }
-
+/// get a char from the user over uart
 pub unsafe fn get_uart() -> &'static mut UART {
     &mut UART
 }
 
+/// implementation for print_char, get_char
 pub struct UART {
     reg: UartRegister,
 }
 
 impl UART {
-    fn print_char(&mut self, char: u8) {
+    /// Print a char if the lsr is free (the bit 5 is set)
+    fn print_char(&mut self, char: char) {
         unsafe {
+            // Loop until char is send to the buffer register
             loop {
                 let lsr = self.reg.lsr.read();
+                //Check if we can overwrite the buffer register
                 if lsr.is_set(5) {
-                    self.reg.rbr_thr_dll.write(char);
+                    self.reg.rbr_thr_dll.write(char as u8);
                     return;
                 }
             }
         }
     }
 
-    fn read_char(&self) -> char {
-        unsafe {
-            return self.reg.rbr_thr_dll.read() as char;
-        }
+    unsafe fn get_char(&mut self) -> char {
+        let lsr = &self.reg.lsr;
+        while !lsr.read().is_set(0) {}
+        let output = self.reg.rbr_thr_dll.read() as char;
+        //print_char(output);
+        return output;
     }
 }
 
+/// implementation for write_str
 impl core::fmt::Write for UART {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
         for c in s.chars() {
-            self.print_char(c as u8);
+            self.print_char(c as char);
         }
         Ok(())
     }
@@ -71,7 +97,7 @@ impl core::fmt::Write for UART {
 struct UartRegister {
     /// Receive Buffer Register, Transmit Holding Register | LSB of Divisor Latch when enabled.
     rbr_thr_dll: MemoryMapping<u8>,
-    /// N/A, Interrupt Enable Register | MSB of Divisor Latch when enabled.
+    /// N/A, Interrupt Enable Register | MSB of Divisor Latch when enabled. previous: ier_dlm
     ier_dlm: MemoryMapping<Byte>,
     /// Interrupt Status Register, FIFO control Register
     isr_fcr: MemoryMapping<Byte>,

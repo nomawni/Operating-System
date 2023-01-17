@@ -52,6 +52,55 @@
                 }
             ],
             "postDebugTask": "Terminate All"
+        },
+        {
+            "name": "Debug leonhard riscv_rust_os",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/target/riscv64gc-unknown-none-elf/debug/riscv_rust_os",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "riscv64-elf-gdb",
+            "miDebuggerServerAddress": "localhost:1234",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": false,
+                },
+                {
+                    "description": "riscv",
+                    "text": "set architecture riscv:rv64",
+                    "ignoreFailures": false,
+                },
+            ],
+            "postRemoteConnectCommands": [
+                {
+                    "description": "Restore user 1",
+                    "text": "restore ./target/riscv64gc-unknown-none-elf/debug/user_1.bin binary 0x80100000",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Load user 1 symbols",
+                    "text": "add-symbol-file ./target/riscv64gc-unknown-none-elf/debug/user_1 0x80100000",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Restore user 2",
+                    "text": "restore ./target/riscv64gc-unknown-none-elf/debug/user_2.bin binary 0x80200000",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Load user 2 symbols",
+                    "text": "add-symbol-file ./target/riscv64gc-unknown-none-elf/debug/user_2 0x80200000",
+                    "ignoreFailures": false
+                }
+            ],
+            "postDebugTask": "Terminate All"
         }
     ]
 }

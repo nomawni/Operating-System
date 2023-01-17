@@ -91,6 +91,7 @@ pub fn save_cur_prog(mepc: usize, sp: usize) {
         }
         let prog = cur().get();
         prog.mepc = mepc;
+        cur().increment_mepc();
         prog.sp = sp;
     }
 }

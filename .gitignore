@@ -2,3 +2,5 @@ target/
 .history/
 temp/
 docs/_git
+.vscode/launch.json
+.vscode/settings.json

@@ -5,6 +5,11 @@ OUTPUT_ARCH( "riscv" ) /* Specify output machine architecture */
 
 ENTRY( _start )
 
+MEMORY
+{
+  ram (wxa) : ORIGIN = 0x80000000, LENGTH = 128M
+}
+
 PHDRS {         /*Instructs the linker to only load the specified program headers - https://sourceware.org/binutils/docs/ld/PHDRS.html*/
   text PT_LOAD;
   rodata PT_LOAD;
@@ -51,4 +56,9 @@ SECTIONS {                /*Specifies how the sections are merged and where they
   PROVIDE(_stack_start = _bss_end);
   PROVIDE(_stack_size = 0x80000); /*(524 KiB)*/
   PROVIDE(_stack_end = _stack_start + _stack_size);
+  PROVIDE(_memory_start = ORIGIN(ram));
+  PROVIDE(_memory_end = ORIGIN(ram) + LENGTH(ram));
+
+  PROVIDE(_heap_start = _stack_end);
+  PROVIDE(head_size = _memory_end - _heap_start);
 }

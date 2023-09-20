@@ -8,7 +8,7 @@
 - Leonhard Kohn (leonhard.kohn@stud.uni-bamberg.de)
 - Tobias Treuheit (tobias-niklas.treuheit@stud.uni-bamberg.de))
 - Max Meidinger (max_meidinger@stud.uni-bamberg.de)
-
+- Ibrahima Sory Sow (ibrahima-sory.sow@stud.uni-bamberg.de)
 ## Description
 
 In this project, we attempt to build a mikrokernel in RUST on a RISCV processor. For this we use the code of Timo Renk as a basis.

@@ -1,8 +1,3 @@
-extern "C" {
-    static HEAP_START: usize;
-    static HEAP_END: usize;
-}
-
 const PAGE_SIZE: usize = 4096;
 const MEM_SIZE: usize = 128 * 1024 * 1024;
 
